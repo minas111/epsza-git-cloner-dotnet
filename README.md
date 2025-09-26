@@ -1,2 +1,3 @@
 # epsza-git-cloner-dotnet
-Dotnet Project Cloner
+
+dotnet run --project GitCloner.csproj
