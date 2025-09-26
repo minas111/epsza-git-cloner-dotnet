@@ -1,5 +1,9 @@
 # Example repository URLs - one per line
 # Lines starting with # are comments and will be ignored
 
-https://github.com/andrewbotesdevz/saucyrobotank
-https://github.com/Christiaan-EPSza/robo-code-test
+
+https://github.com/minas111/The1Destroyer
+https://github.com/Albrecht-Ohsiek/FATHER.git
+https://github.com/Christiaan-EPSza/Christiaan
+https://github.com/andrewbotesdevz/andrew
+https://github.com/ChanteDeysel/Chante.git

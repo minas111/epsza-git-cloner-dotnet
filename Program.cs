@@ -71,7 +71,7 @@ public class Program
                 return Task.FromResult(new RepoResult("Unknown", "Unknown", "Invalid URL", DateTime.Now, false));
             }
             
-            var repoPath = Path.Combine(baseCloneDirectory, repoInfo.UserName, repoInfo.RepoName);
+            var repoPath = Path.Combine(baseCloneDirectory, repoInfo.RepoName);
             var isNewRepo = !Directory.Exists(repoPath);
             var hasNewChanges = false;
             
