@@ -80,6 +80,9 @@ public class Program
                 // Clone new repository
                 Repository.Clone(repoUrl, repoPath);
                 hasNewChanges = true;
+                
+                // Set execute permissions on .sh files for Unix systems
+                SetExecutePermissionsOnShellScripts(repoPath);
             }
             else
             {
@@ -107,6 +110,9 @@ public class Program
                         {
                             Commands.Checkout(repo, originMain, new CheckoutOptions());
                             repo.Reset(ResetMode.Hard, originMain.Tip);
+                            
+                            // Set execute permissions on .sh files for Unix systems after update
+                            SetExecutePermissionsOnShellScripts(repoPath);
                         }
                         catch
                         {
@@ -153,6 +159,54 @@ public class Program
         catch
         {
             return null;
+        }
+    }
+    
+    private static void SetExecutePermissionsOnShellScripts(string repoPath)
+    {
+        // Only set permissions on Unix systems (macOS and Linux)
+        if (!OperatingSystem.IsWindows())
+        {
+            try
+            {
+                // Find all .sh files recursively
+                var shellScripts = Directory.GetFiles(repoPath, "*.sh", SearchOption.AllDirectories);
+                
+                foreach (var scriptPath in shellScripts)
+                {
+                    // Use chmod to set execute permissions (755 = rwxr-xr-x)
+                    var process = new Process
+                    {
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = "chmod",
+                            Arguments = $"+x \"{scriptPath}\"",
+                            UseShellExecute = false,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            CreateNoWindow = true
+                        }
+                    };
+                    
+                    process.Start();
+                    process.WaitForExit();
+                    
+                    if (process.ExitCode != 0)
+                    {
+                        var error = process.StandardError.ReadToEnd();
+                        AnsiConsole.MarkupLine($"[yellow]Warning: Failed to set permissions on {scriptPath}: {error}[/]");
+                    }
+                }
+                
+                if (shellScripts.Length > 0)
+                {
+                    AnsiConsole.MarkupLine($"[dim]Set execute permissions on {shellScripts.Length} shell script(s) in {Path.GetFileName(repoPath)}[/]");
+                }
+            }
+            catch (Exception ex)
+            {
+                AnsiConsole.MarkupLine($"[yellow]Warning: Failed to set shell script permissions: {ex.Message}[/]");
+            }
         }
     }
     
